@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AskMyNotes – Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <!-- Login Header -->
+        <header class="login-header">
+            <h1><i class="fas fa-robot"></i> AskMyNotes</h1>
+            <p class="subtitle">Your AI Study Companion</p>
+        </header>
+        
+        <!-- Login Form -->
+        <div class="login-card">
+            <div class="form-switcher">
+                <button id="login-tab" class="tab active" onclick="switchToLogin()">Login</button>
+                <button id="register-tab" class="tab" onclick="switchToRegister()">Register</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="login-email" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('login-password')"></i>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember-me">
+                        <span class="checkmark"></span>
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link" onclick="showForgotPassword()">Forgot Password?</a>
+                </div>
+                
+                <button type="submit" class="btn primary btn-full">Login</button>
+                
+                <div class="divider">
+                    <span>or</span>
+                </div>
+                
+                <button type="button" class="btn secondary btn-full" onclick="loginAsGuest()">
+                    <i class="fas fa-user"></i> Continue as Guest
+                </button>
+                
+                <div class="error-message" id="login-error"></div>
+            </form>
+            
+            <!-- Registration Form -->
+            <form id="register-form" class="auth-form" style="display: none;">
+                <div class="form-group">
+                    <label for="register-name">Full Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="register-name" placeholder="Enter your full name" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="register-email" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="register-password" placeholder="Create a password" required minlength="6">
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('register-password')"></i>
+                    </div>
+                    <div class="password-hint">Password must be at least 6 characters</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-confirm-password">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="register-confirm-password" placeholder="Confirm your password" required>
+                        <i class="fas fa-eye toggle-password" onclick="togglePassword('register-confirm-password')"></i>
+                    </div>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="agree-terms" required>
+                        <span class="checkmark"></span>
+                        I agree to the <a href="#" onclick="showTerms()">Terms & Conditions</a>
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn primary btn-full">Create Account</button>
+                
+                <div class="error-message" id="register-error"></div>
+                <div class="success-message" id="register-success" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Main App Container (Hidden Initially) -->
+    <div class="container" id="main-app" style="display: none;">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1><i class="fas fa-robot"></i> AskMyNotes</h1>
+                <div class="user-controls">
+                    <span class="user-name" id="user-name">Welcome</span>
+                    <button class="btn secondary btn-sm" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+            <p class="subtitle">Your AI Study Companion</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Subject Management Section -->
+            <section class="card section" id="subject-section">
+                <h2><i class="fas fa-book"></i> Subject Management</h2>
+                <div class="subject-manager">
+                    <div class="input-group">
+                        <input type="text" id="subject-name" placeholder="Enter subject name (e.g., Mathematics)" maxlength="30">
+                        <button id="create-subject-btn" class="btn primary">
+                            <i class="fas fa-plus"></i> Create Subject
+                        </button>
+                    </div>
+                    <div class="error-message" id="subject-error"></div>
+                    
+                    <div class="subject-list" id="subject-list">
+                        <p class="placeholder-text">No subjects created yet. Create up to 3 subjects.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upload Notes Section -->
+            <section class="card section" id="upload-section">
+                <h2><i class="fas fa-file-upload"></i> Upload Notes</h2>
+                <div class="upload-area">
+                    <div class="subject-selector">
+                        <label for="upload-subject-select">Select Subject:</label>
+                        <select id="upload-subject-select" class="subject-dropdown">
+                            <option value="">-- Select a subject --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="file-upload-container">
+                        <div class="upload-box" id="upload-box">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <p>Drag & drop PDF or TXT files here</p>
+                            <p class="small-text">or click to browse</p>
+                            <input type="file" id="file-input" accept=".pdf,.txt" multiple>
+                        </div>
+                    </div>
+                    
+                    <div class="error-message" id="upload-error"></div>
+                    <div class="uploaded-files" id="uploaded-files"></div>
+                </div>
+            </section>
+
+            <!-- Chat Interface Section -->
+            <section class="card section" id="chat-section">
+                <h2><i class="fas fa-comments"></i> Ask Questions</h2>
+                <div class="chat-container">
+                    <div class="subject-selector">
+                        <label for="chat-subject-select">Select Subject:</label>
+                        <select id="chat-subject-select" class="subject-dropdown">
+                            <option value="">-- Select a subject --</option>
+                        </select>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message bot-message">
+                            <div class="message-content">
+                                <p>Hello! I'm your study copilot. Select a subject and ask me anything about your notes!</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <div class="input-group">
+                            <input type="text" id="question-input" placeholder="Ask a question about your notes..." disabled>
+                            <button id="send-question-btn" class="btn primary" disabled>
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                        </div>
+                        <div class="error-message" id="chat-error"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Study Mode Section -->
+            <section class="card section" id="study-section">
+                <h2><i class="fas fa-graduation-cap"></i> Study Mode</h2>
+                <div class="study-container">
+                    <div class="subject-selector">
+                        <label for="study-subject-select">Select Subject:</label>
+                        <select id="study-subject-select" class="subject-dropdown">
+                            <option value="">-- Select a subject --</option>
+                        </select>
+                    </div>
+                    
+                    <button id="generate-questions-btn" class="btn secondary" disabled>
+                        <i class="fas fa-question-circle"></i> Generate Study Questions
+                    </button>
+                    
+                    <div class="loading-spinner" id="study-loading" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i> Generating questions...
+                    </div>
+                    
+                    <div class="study-questions" id="study-questions"></div>
+                    <div class="error-message" id="study-error"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
